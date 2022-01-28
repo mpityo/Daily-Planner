@@ -22,7 +22,7 @@ var createTimeBlocks = function () {
             .text(timeSlot);   
 
         var taskFieldEl = $("<span>")
-            .addClass("col-9 future")
+            .addClass("text-area col-9 future")
             .attr("id", i);
 
         var saveBtn = $("<button>")
@@ -46,5 +46,17 @@ var auditTime = function (timeSlot) {
         $(timeSlot).addClass("past");
     }
 }
+
+/* THIS IS NOT WORKING */
+$( ".text-area" ).on("click", "span", function () {  
+    var text = $(this)
+    .text()
+    .trim();
+    var textInput = $( "<textarea>" )
+        .addClass("form-control")
+        .val(text);
+    $(this).replaceWith(textInput);
+    textInput.trigger("focus");
+});
 
 createTimeBlocks();
