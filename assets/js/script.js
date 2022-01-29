@@ -48,12 +48,12 @@ var auditTime = function (timeSlot) {
 }
 
 /* THIS IS NOT WORKING */
-$( ".text-area" ).on("click", "span", function () {  
+$(".container").on("click", "span", function () {  
     var text = $(this)
     .text()
     .trim();
     var textInput = $( "<textarea>" )
-        .addClass("form-control")
+        .addClass("col-9")
         .val(text);
     $(this).replaceWith(textInput);
     textInput.trigger("focus");
