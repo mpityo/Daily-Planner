@@ -47,16 +47,39 @@ var auditTime = function (timeSlot) {
     }
 }
 
-/* THIS IS NOT WORKING */
+/* When user clicks the task container, specifically the span */
+/* Creates a text box to type into */
 $(".container").on("click", "span", function () {  
     var text = $(this)
     .text()
     .trim();
     var textInput = $( "<textarea>" )
-        .addClass("col-9")
+        .addClass("col-9 text-area")
         .val(text);
     $(this).replaceWith(textInput);
     textInput.trigger("focus");
+});
+
+/* Save button was pressed */
+$(".container").on("click", "button", function () {
+	console.log($(this).closest(".time-row").attr("id"));
+	// get the text from text container in same group
+	var textToSelect = $(this)
+		.closest(".time-row")
+		.attr("id");
+	
+	var text = $(".text-area")
+		.attr(textToSelect)
+		.text()
+		.trim();	
+	
+	console.log(text);
+	
+	var textInput = $( "<span>" )
+		.addClass("col-9 text-area future")
+		.text(text);
+	
+	$( this ).closest(".col-9").replaceWith(textInput);
 });
 
 createTimeBlocks();
