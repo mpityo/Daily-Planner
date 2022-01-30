@@ -1,3 +1,4 @@
+var plans = {};
 $( "#currentDay" ).text(dayjs().format('dddd, MMMM DD'));
 
 // create each time block for 9-5
@@ -45,6 +46,48 @@ var auditTime = function (timeSlot) {
     }
 }
 
+var loadTasks = function () {  
+    plans = JSON.parse(localStorage.getItem("plans"));
+
+    if (!plans) {
+        plans = [{
+            id: "",
+            text: ""
+        }];
+    }
+
+    plans.forEach(function() {
+        $.each(plans, function (index) {
+            $("#" + plans[index].id + " .text-area").text(plans[index].text);
+        });
+    });
+}
+
+var saveTasks = function (id, text) {  
+    var modified = false;
+    $.each(plans, function(index) {
+        if(plans[index].id === id) {
+            plans[index].text = text;
+            modified = true;
+            return;
+        }
+    });
+    if (!modified) {
+        if (plans[0].id != "") {
+            plans.push({
+                id: id,
+                text: text
+            });
+        } else {
+            plans[0].id = id;
+            plans[0].text = text;
+            console.log("this was called");
+        }
+    }
+
+    localStorage.setItem("plans", JSON.stringify(plans));
+}
+
 /* When user clicks the task container, specifically the span */
 /* Creates a text box to type into */
 $(".container").on("click", "span", function () {  
@@ -62,28 +105,31 @@ $(".container").on("click", "span", function () {
 
 /* Save button was pressed */
 $(".container").on("click", "button", function () {
-	// get the text from textarea in same group
+	// get the timeblock that is trying to be saved
 	var timeSlot = $(this)
 	    .closest(".time-row")
 	 	.attr("id");
 	
-    if ($("#" + timeSlot + " .text-area").attr("edited")) {
+    // if the timeblock has been edited, get text, if not return
+    if ($("#" + timeSlot + " .text-area").attr("edited") === "true") {
         var text = $("#" + timeSlot + " .text-area")
             .val()
             .trim();
     } else {
+        alert("There are no changes to save!");
         return;
-    }	
+    }
 	
+    // create new span to hold text and assign class to control color
 	var textInput = $( "<span>" )
 	 	.addClass("col-9 text-area " + auditTime(timeSlot))
         .attr("edited", false)
         .attr("id", timeSlot)
 	 	.text(text);
 
-    console.log(textInput);
-	
 	$("#" + timeSlot + " .text-area").replaceWith(textInput);
+    saveTasks(timeSlot, text);
 });
 
 createTimeBlocks();
+loadTasks();
