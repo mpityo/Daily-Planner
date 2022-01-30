@@ -22,7 +22,7 @@ var createTimeBlocks = function () {
             .text(timeSlot);   
 
         var taskFieldEl = $("<span>")
-            .addClass("text-area col-9 future")
+            .addClass("text-area col-9 " + auditTime(i))
             .attr("id", i);
 
         var saveBtn = $("<button>")
@@ -30,20 +30,18 @@ var createTimeBlocks = function () {
 
         timeBlockContainer.append(timeEl, taskFieldEl, saveBtn);
         $(".container").append(timeBlockContainer);
-        auditTime($( taskFieldEl ));
     }
 }
 
 var auditTime = function (timeSlot) {  
     var currentHour = dayjs().hour();
-    var timeSlotHour = $(timeSlot).attr("id");
 
-    if (currentHour == timeSlotHour) {
-        $(timeSlot).removeClass("future");
-        $(timeSlot).addClass("present");
-    } else if (currentHour > timeSlotHour) {
-        $(timeSlot).removeClass("present future");
-        $(timeSlot).addClass("past");
+    if (currentHour == timeSlot) {
+        return "present";
+    } else if (currentHour > timeSlot) {
+        return "past";
+    } else if (currentHour < timeSlot) {
+        return "future";
     }
 }
 
@@ -51,10 +49,12 @@ var auditTime = function (timeSlot) {
 /* Creates a text box to type into */
 $(".container").on("click", "span", function () {  
     var text = $(this)
-    .text()
-    .trim();
+        .text()
+        .trim();
     var textInput = $( "<textarea>" )
-        .addClass("col-9 text-area")
+        .addClass("col-9 text-area " + auditTime($(this).attr("id")))
+        .attr("edited", true)
+        .attr("id", $(this).attr("id"))
         .val(text);
     $(this).replaceWith(textInput);
     textInput.trigger("focus");
@@ -62,24 +62,28 @@ $(".container").on("click", "span", function () {
 
 /* Save button was pressed */
 $(".container").on("click", "button", function () {
-	console.log($(this).closest(".time-row").attr("id"));
-	// get the text from text container in same group
-	var textToSelect = $(this)
-		.closest(".time-row")
-		.attr("id");
+	// get the text from textarea in same group
+	var timeSlot = $(this)
+	    .closest(".time-row")
+	 	.attr("id");
 	
-	var text = $(".text-area")
-		.attr(textToSelect)
-		.text()
-		.trim();	
-	
-	console.log(text);
+    if ($("#" + timeSlot + " .text-area").attr("edited")) {
+        var text = $("#" + timeSlot + " .text-area")
+            .val()
+            .trim();
+    } else {
+        return;
+    }	
 	
 	var textInput = $( "<span>" )
-		.addClass("col-9 text-area future")
-		.text(text);
+	 	.addClass("col-9 text-area " + auditTime(timeSlot))
+        .attr("edited", false)
+        .attr("id", timeSlot)
+	 	.text(text);
+
+    console.log(textInput);
 	
-	$( this ).closest(".col-9").replaceWith(textInput);
+	$("#" + timeSlot + " .text-area").replaceWith(textInput);
 });
 
 createTimeBlocks();
