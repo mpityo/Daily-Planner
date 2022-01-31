@@ -34,4 +34,4 @@ Project is fully open source: explore the code and upgrade away!
 <br>
 <br>
 
-![An hourly list of tasks color coded by if they have passed or not a](./assets/images/daily-planner-final.png "Main page")
+![An hourly list of tasks color coded by if they have passed or not a](./assets/images/daily-planner-filled.png "Main page")
