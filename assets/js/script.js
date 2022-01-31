@@ -51,7 +51,7 @@ var loadTasks = function () {
 
     if (!plans) {
         plans = [{
-            id: "",
+            id: 0,
             text: ""
         }];
     }
